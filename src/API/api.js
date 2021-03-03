@@ -1,20 +1,15 @@
-import {axios} from 'axios';
+import axios from "axios";
 
-const baseUrl = `https://localhost:44355/api/auth/`;
-const headers = {
-    'Content-Type': 'application/json',
-    'Authorization': `Bearer ${localStorage.getItem(token)}`;
-}
+const baseUrl = "https://localhost:44355/api/auth/";
 
 
-export default {
-    
-    apiCall(url = baseUrl){
-        return {
-            register : axios.post(url + 'register', data)
-            .then(response => P)
-
-
-        }
-    }
-}
+export const apilogin = (cred) => {
+    return axios
+      .post(baseUrl + "login", cred)
+      .then((response) => {
+        
+        localStorage.setItem("token", response.data.token);
+        return response.data;
+      });
+  };
+  

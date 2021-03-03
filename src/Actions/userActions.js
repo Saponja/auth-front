@@ -2,6 +2,7 @@
 import * as actions from  '../actiontypes';
 import axios from 'axios';
 import { act } from 'react-dom/test-utils';
+import {apilogin} from '../API/api'
 
 const baseUrl = "https://localhost:44355/api/auth/";
 
@@ -33,25 +34,54 @@ export const register = user => dispatch => {
     })
 }
 
-export const login = credentials => dispatch => {
+// export const login = credentials => dispatch => {
     
-    dispatch({type : actions.login.LOGIN_REQUEST});
+//     dispatch({type : actions.login.LOGIN_REQUEST});
 
-    axios.post(baseUrl + "login", credentials)
-    .then(response => {
-        localStorage.setItem("token", response.data.token);
+//     axios.post(baseUrl + "login", credentials)
+//     .then(response => {
+//         localStorage.setItem("token", response.data.token);
+//         dispatch({
+//             type : actions.login.LOGIN_SUCCESS,
+//             payload : response.data
+//         })
+//     })
+//     .catch(error => {
+//         dispatch({
+//             type : actions.login.LOGIN_FAILURE,
+//             payload : error
+//         })
+//     });
+// }
+
+export const login = (cred) => (dispatch) => {
+    return apilogin(cred).then(
+      (data) => {
         dispatch({
-            type : actions.login.LOGIN_SUCCESS,
-            payload : response.data
-        })
-    })
-    .catch(error => {
+          type: actions.login.LOGIN_SUCCESS,
+          payload: { user: data },
+        });
+  
+        return Promise.resolve();
+      },
+      (error) => {
+        const message =
+          (error.response &&
+            error.response.data &&
+            error.response.data.message) ||
+          error.message ||
+          error.toString();
+  
         dispatch({
-            type : actions.login.LOGIN_FAILURE,
-            payload : error
-        })
-    });
-}
+          type: actions.login.LOGIN_FAILURE,
+          payload : message
+        });
+  
+        return Promise.reject();
+      }
+    );
+  };
+
 
 
 export const logout = () => dispatch => {

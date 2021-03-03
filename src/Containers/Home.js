@@ -10,11 +10,12 @@ import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
+import { withStyles, makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import {login} from '../Actions/userActions'
 import { useDispatch, useSelector } from 'react-redux';
 import {getAirplanes, getOne} from '../Actions/userActions'
+import { Paper, Table, TableBody, TableContainer, TableHead, TableRow, TableCell } from '@material-ui/core';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -40,6 +41,9 @@ const useStyles = makeStyles((theme) => ({
 export default function Home({role}) {
   const classes = useStyles();
   const dispatch = useDispatch();
+  const airplanes = useSelector(state => state.airplaneReducer.airplanes)
+  const airplane = useSelector(state => state.airplaneReducer.oneairplane)
+
 
 
   function handleClick(e){
@@ -49,6 +53,16 @@ export default function Home({role}) {
   function handleClick2(e){
     dispatch(getOne(5));
 }
+
+const StyledTableCell = withStyles((theme) => ({
+  head: {
+    backgroundColor: theme.palette.common.black,
+    color: theme.palette.common.white,
+  },
+  body: {
+    fontSize: 14,
+  },
+}))(TableCell);
 
 
   return (
@@ -80,6 +94,30 @@ export default function Home({role}) {
           </Button>
         </Grid>
         </Grid>
+        <TableContainer component={Paper}>
+        <Table className={classes.table} aria-label="customized table">
+          <TableHead>
+            <TableRow>
+              <StyledTableCell>Name</StyledTableCell>
+              <StyledTableCell>Model</StyledTableCell>
+              <StyledTableCell>Compnay</StyledTableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {
+              airplanes.map((item, i) => {
+                return (
+                  <TableRow key = {i}>
+                    <TableCell>{item.name}</TableCell>
+                    <TableCell>{item.model}</TableCell>
+                    <TableCell>{item.company}</TableCell>
+                  </TableRow>
+                )
+              })
+            }
+          </TableBody>
+        </Table>
+      </TableContainer>
       </div>
     </Container>
   );

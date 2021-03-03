@@ -48,23 +48,25 @@ export default function SignIn() {
   })
 
   const dispatch = useDispatch();
-  const loggedIn = useSelector((state) => state.loginReducer.loggedIn)
   
   function handleChange(e){
     const { name, value } = e.target;
     setCred(cred => ({ ...cred, [name]: value}));
-
-    console.log(cred);
   }
 
   function handleSubmit(e){
     e.preventDefault();
     if (cred.email && cred.password) {
-        dispatch(login(cred));
+        dispatch(login(cred)).then(() => {
+          history.push("/home");
+        })
+        .catch(() => {
+          alert("Wrong credentials")
+        })
         
-        history.push("/home");
         
-        
+  
+
     }
   }
 
