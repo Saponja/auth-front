@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -14,13 +14,19 @@ import { withStyles, makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import {login} from '../Actions/userActions'
 import { useDispatch, useSelector } from 'react-redux';
-import {getAirplanes, getOne} from '../Actions/userActions'
-import { Paper, Table, TableBody, TableContainer, TableHead, TableRow, TableCell } from '@material-ui/core';
+import {getAirplanes, getOne, deleteAirplane} from '../Actions/userActions'
+import { Paper, Table, TableBody, TableContainer, TableHead, TableRow, TableCell, IconButton, Tooltip } from '@material-ui/core';
+import { Add, AddOutlined, DeleteOutline, Edit } from '@material-ui/icons';
+import DeleteIcon from '@material-ui/icons/Delete';
+import AddIcon from '@material-ui/icons/Delete';
+import InputForm from './InputForm'
+
 
 
 const useStyles = makeStyles((theme) => ({
   paper: {
     marginTop: theme.spacing(8),
+    marginBottom: theme.spacing(8),
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
@@ -39,68 +45,53 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function Home({role}) {
+  const [currentId, setCurrentId] = useState(0);
   const classes = useStyles();
   const dispatch = useDispatch();
   const airplanes = useSelector(state => state.airplaneReducer.airplanes)
-  const airplane = useSelector(state => state.airplaneReducer.oneairplane)
+  const error = useSelector(state => state.airplaneReducer.error)
 
 
-
-  function handleClick(e){
-      dispatch(getAirplanes());
+  const onDelete = id => {
+    dispatch(deleteAirplane(id));
+    if(error.status === 200){
+      alert("Airplane has been deleted successfully");
+    }else if(error.status == 403){
+      alert("You have no permission to delete airplane");
+    }else if(error.status == 400){
+      alert("Error");
+    }
   }
-
-  function handleClick2(e){
-    dispatch(getOne(5));
-}
 
 const StyledTableCell = withStyles((theme) => ({
   head: {
-    backgroundColor: theme.palette.common.black,
-    color: theme.palette.common.white,
-  },
-  body: {
-    fontSize: 14,
-  },
+    background: '#3f51b5',
+    color: "white"
+  }
 }))(TableCell);
+
+  useEffect(() => {
+    dispatch(getAirplanes());
+  }, [])
 
 
   return (
-    <Container component="main" maxWidth="xs">
+    <Container component="main" maxWidth="md">
       <CssBaseline />
       <div className={classes.paper}>
-      <Grid>
 
-        <Grid item xs = {12}>
-        <Button
-            onClick = {handleClick}
-            fullWidth
-            variant="contained"
-            color="primary"
-            className={classes.submit}
-          >
-            CLICKME
-          </Button>
-        </Grid>
-        <Grid item xs = {12}>
-        <Button
-            onClick = {handleClick2}
-            fullWidth
-            variant="contained"
-            color="primary"
-            className={classes.submit}
-          >
-            CLICKME
-          </Button>
-        </Grid>
-        </Grid>
+        <Container style = {{marginBottom : "3rem"}}>
+          <InputForm currentId = {currentId} setCurrentId = {setCurrentId}/>
+        </Container>
+
         <TableContainer component={Paper}>
         <Table className={classes.table} aria-label="customized table">
           <TableHead>
             <TableRow>
-              <StyledTableCell>Name</StyledTableCell>
-              <StyledTableCell>Model</StyledTableCell>
-              <StyledTableCell>Compnay</StyledTableCell>
+              <StyledTableCell width ="30%">Name</StyledTableCell>
+              <StyledTableCell width ="30%">Model</StyledTableCell>
+              <StyledTableCell width ="20%">Compnay</StyledTableCell>
+              <StyledTableCell></StyledTableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -111,6 +102,20 @@ const StyledTableCell = withStyles((theme) => ({
                     <TableCell>{item.name}</TableCell>
                     <TableCell>{item.model}</TableCell>
                     <TableCell>{item.company}</TableCell>
+                    <TableCell>
+                      <Tooltip title = "Edit">
+                        <IconButton area-label = "edit" onClick = {() => setCurrentId(item.airplaneId)}>
+                          <Edit color = "primary"/>
+                        </IconButton>
+                      </Tooltip>
+                      <Tooltip title = "Delete">
+                        <IconButton area-label = "delete" onClick = {() => onDelete(item.airplaneId)
+                          
+                        }>
+                          <DeleteIcon color = "secondary"/>
+                        </IconButton>
+                      </Tooltip>
+                    </TableCell>
                   </TableRow>
                 )
               })

@@ -42,14 +42,13 @@ export default function Navbar({loggedIn, token, role}) {
   }
 
   function handleSignout(){
-    console.log(localStorage.getItem('token'));
     localStorage.removeItem('token');
     dispatch(logout());
     history.push('/');
     
   }
 
-  if(!loggedIn){
+  if(!loggedIn && localStorage.getItem('token') == null){
     return (
       <div className={classes.root}>
         <AppBar position="static">

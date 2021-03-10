@@ -108,6 +108,77 @@ export const getAirplanes = () => dispatch => {
     })
 }
 
+export const deleteAirplane = (id) => dispatch => {
+    axios.delete(`https://localhost:44355/api/airplane/${id}`, {headers : getHeader()})
+    .then(response => {
+        dispatch({
+            type : actions.airplanes.DELETE_SUCCESS,
+            payload : id
+        });
+    })
+    .catch((error) => {
+        dispatch({
+            type : actions.airplanes.DELETE_FAILURE,
+            payload : error.response
+        });
+    })
+}
+
+export const addAirplane = (data) => dispatch => {
+
+    const postData = {
+
+        name : data.aname,
+        company : data.company,
+        model : data.model
+
+    }
+
+    axios.post(`https://localhost:44355/api/airplane`, postData, {headers : getHeader()})
+    .then(response => {
+        dispatch({
+            type : actions.airplanes.ADD_SUCCESS,
+            payload : response.data
+        })
+    })
+    .catch(error => {
+        dispatch({
+            type : actions.airplanes.ADD_FAILURE,
+            payload : error
+        })
+    })
+    
+}
+
+
+export const updateAirplane = (id, data) => dispatch => {
+
+    const putData = {
+        airplaneId : id,
+
+        name : data.aname,
+        company : data.company,
+        model : data.model
+
+    }
+
+    axios.put(`https://localhost:44355/api/airplane/${id}`, putData, {headers : getHeader()})
+    .then(response => {
+        dispatch({
+            type : actions.airplanes.UPDATE_SUCCES,
+            payload : {id, ...putData}
+        })
+    })
+    .catch(error => {
+        dispatch({
+            type : actions.airplanes.UPDATE_FAILURE,
+            payload : error
+        })
+    })
+
+}
+
+
 
 export const getOne = (id) => dispatch => {
     axios.get(`https://localhost:44355/api/airplane/get/${id}`, {headers : getHeader()})
