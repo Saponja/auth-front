@@ -2,6 +2,15 @@ import axios from "axios";
 
 const baseUrl = "https://localhost:44355/api/auth/";
 
+function getHeader(){
+  const token = localStorage.getItem("token");
+  if(token){
+      return { Authorization: 'Bearer ' + token };
+  }else{
+      return {};
+  }
+}
+
 
 export const apilogin = (cred) => {
     return axios
@@ -12,4 +21,15 @@ export const apilogin = (cred) => {
         return response.data;
       });
   };
+
+export const apiDelete = id => {
+
+  return axios.delete(`https://localhost:44355/api/airplane/${id}`, {headers : getHeader()});
+
+}  
+
+export const apiAdd = data => {
   
+  return axios.post(`https://localhost:44355/api/airplane`, data, {headers : getHeader()});
+
+}

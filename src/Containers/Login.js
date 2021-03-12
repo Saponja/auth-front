@@ -98,7 +98,6 @@ export default function SignIn() {
             label="Email Address"
             name="email"
             autoComplete="email"
-            autoFocus
           />
           <TextField
             variant="outlined"
@@ -122,16 +121,6 @@ export default function SignIn() {
             Sign In
           </Button>
         </form>
-
-        <Button
-            onClick = {handleClick}
-            fullWidth
-            variant="contained"
-            color="primary"
-            className={classes.submit}
-          >
-            CLICKME
-          </Button>
       </div>
     </Container>
   );

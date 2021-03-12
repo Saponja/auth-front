@@ -12,14 +12,16 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { withStyles, makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
-import {login} from '../Actions/userActions'
+import {deleteAirplaneWithFeed, login} from '../Actions/userActions'
 import { useDispatch, useSelector } from 'react-redux';
 import {getAirplanes, getOne, deleteAirplane} from '../Actions/userActions'
-import { Paper, Table, TableBody, TableContainer, TableHead, TableRow, TableCell, IconButton, Tooltip } from '@material-ui/core';
-import { Add, AddOutlined, DeleteOutline, Edit } from '@material-ui/icons';
+import { Paper, Table, TableBody, TableContainer, TableHead, TableRow, TableCell, IconButton, Tooltip, Snackbar } from '@material-ui/core';
+import { Add, AddAlert, AddOutlined, ContactSupportOutlined, DeleteOutline, Edit } from '@material-ui/icons';
 import DeleteIcon from '@material-ui/icons/Delete';
 import AddIcon from '@material-ui/icons/Delete';
 import InputForm from './InputForm'
+import MuiAlert from '@material-ui/lab/Alert';
+import Slide from '@material-ui/core/Slide';
 
 
 
@@ -44,23 +46,50 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+
+function Alert(props) {
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
+
+
 export default function Home({role}) {
   const [currentId, setCurrentId] = useState(0);
   const classes = useStyles();
   const dispatch = useDispatch();
   const airplanes = useSelector(state => state.airplaneReducer.airplanes)
   const error = useSelector(state => state.airplaneReducer.error)
+  const [color, setColor] = useState("info");
+  const [text, setText] = useState("");
+
+  const [open, setOpen] = useState(false)
+
+
+  const handleClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+  
+    setOpen(false);
+  }
 
 
   const onDelete = id => {
-    dispatch(deleteAirplane(id));
-    if(error.status === 200){
-      alert("Airplane has been deleted successfully");
-    }else if(error.status == 403){
-      alert("You have no permission to delete airplane");
-    }else if(error.status == 400){
-      alert("Error");
-    }
+    dispatch(deleteAirplaneWithFeed(id))
+    .then((response) => {
+      setColor("success");
+      setText("You have deleted airplane successfully");
+      setOpen(true)
+    }, (status) => {
+          if(status == 400){
+            setColor("error");
+            setText("Bad request");
+            setOpen(true)
+          }else if(status == 403){
+            setColor("warning");
+            setText("Not authorized");
+            setOpen(true)
+          }
+    })
   }
 
 const StyledTableCell = withStyles((theme) => ({
@@ -78,10 +107,18 @@ const StyledTableCell = withStyles((theme) => ({
   return (
     <Container component="main" maxWidth="md">
       <CssBaseline />
+      <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+        <Alert onClose={handleClose} severity= {color}>
+          {text}
+        </Alert>
+      </Snackbar>
+
       <div className={classes.paper}>
 
         <Container style = {{marginBottom : "3rem"}}>
-          <InputForm currentId = {currentId} setCurrentId = {setCurrentId}/>
+          <InputForm currentId = {currentId} setCurrentId = {setCurrentId} setOpen = {setOpen} setColor = {setColor}
+            setText = {setText}
+          />
         </Container>
 
         <TableContainer component={Paper}>

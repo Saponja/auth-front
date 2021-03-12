@@ -2,7 +2,7 @@
 import * as actions from  '../actiontypes';
 import axios from 'axios';
 import { act } from 'react-dom/test-utils';
-import {apilogin} from '../API/api'
+import {apiAdd, apiDelete, apilogin} from '../API/api'
 
 const baseUrl = "https://localhost:44355/api/auth/";
 
@@ -150,6 +150,36 @@ export const addAirplane = (data) => dispatch => {
     
 }
 
+export const addAirplaneWithFeed = data => dispatch => {
+
+    const postData = {
+
+        name : data.aname,
+        company : data.company,
+        model : data.model
+
+    }
+
+    return apiAdd(postData).then(
+        (response) => {
+            dispatch({
+                type : actions.airplanes.ADD_SUCCESS,
+                payload : response.data
+            })
+
+            return Promise.resolve();
+        }, (error) => {
+            dispatch({
+                type : actions.airplanes.ADD_FAILURE,
+                payload : error
+            })
+
+            return Promise.reject(error.response.status);
+        }
+    )
+
+}
+
 
 export const updateAirplane = (id, data) => dispatch => {
 
@@ -194,4 +224,34 @@ export const getOne = (id) => dispatch => {
             payload : error.response
         });
     })
+}
+
+
+export const deleteAirplaneWithFeed = (id) => dispatch => {
+    
+    return apiDelete(id).then(
+        (data) => {
+            dispatch({
+                type : actions.airplanes.DELETE_SUCCESS,
+                payload : id
+            });
+      
+            return Promise.resolve();
+          },
+          (error) => {
+            const message = error.response.status;
+            //   (error.response &&
+            //     error.response.data &&
+            //     error.response.data.message) ||
+            //   error.message ||
+            //   error.toString();
+      
+            dispatch({
+                type : actions.airplanes.DELETE_FAILURE,
+                payload : message
+            });
+      
+            return Promise.reject(message);
+          }
+        );
 }

@@ -1,7 +1,7 @@
 import React, { useEffect, useState} from 'react';
 import {Button, FormControl, Grid, MenuItem, Select, TextField, withStyles} from "@material-ui/core";
 import useForm from './useForm';
-import { addAirplane, updateAirplane } from '../Actions/userActions';
+import { addAirplane, addAirplaneWithFeed, updateAirplane } from '../Actions/userActions';
 import { useDispatch, useSelector } from 'react-redux';
 
 const styles = theme => ({
@@ -31,6 +31,10 @@ const InputForm = ({classes ,...props}) => {
 
     const dispatch = useDispatch();
     const airplanes = useSelector(state => state.airplaneReducer.airplanes);
+    const [btnText, setBtnText] = useState("Add");
+
+    let changed = false;
+
 
     const {
         values,
@@ -41,15 +45,29 @@ const InputForm = ({classes ,...props}) => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log(props.currentId);
         if(props.currentId == 0){
-            dispatch(addAirplane(values));
+            dispatch(addAirplaneWithFeed(values))
+            .then((response) => {
+                props.setColor("success");
+                props.setText("You added airplane successfully");
+                props.setOpen(true)
+              }, (status) => {
+                    if(status == 400){
+                        props.setColor("error");
+                        props.setText("Bad request");
+                        props.setOpen(true)
+                    }else if(status == 403){
+                        props.setColor("warning");
+                        props.setText("Not authorized");
+                        props.setOpen(true)
+                    }
+              })
             props.setCurrentId(0);
         }
         if(props.currentId != 0){
             dispatch(updateAirplane(props.currentId, values));
             props.setCurrentId(0);
-
+            
         }
         
     }
@@ -57,6 +75,16 @@ const InputForm = ({classes ,...props}) => {
     
 
     useEffect(() => {
+
+    
+        if(props.currentId == 0){
+            setBtnText("Add");
+        }else{
+            setBtnText("Edit");
+        }
+        
+        
+
         if(props.currentId != 0){
             let airplane = airplanes.find(x => x.airplaneId == props.currentId);
             setValues({
@@ -109,24 +137,14 @@ const InputForm = ({classes ,...props}) => {
                 <Grid item xs = {6}>
                     <div>
                         <Button
-                            name = "add"
+                            name = "sub"
                             variant = "contained"
                             color = "primary"
                             type = "submit"
                             className = {classes.btnMargin}
                             >
-                            Edit
+                            {btnText}
                         </Button>
-                        <Button
-                            name = "edit"
-                            variant = "contained"
-                            color = "primary"
-                            type = "submit"
-                            className = {classes.btnMargin}
-                            >
-                            Add
-                        </Button>
-                    </div>
                         <Button
                             name = "reset"
                             variant = "contained"
@@ -142,7 +160,8 @@ const InputForm = ({classes ,...props}) => {
                             >
                             Reset
                         </Button>
-
+                    </div>
+                    
                 </Grid>
 
             </Grid>

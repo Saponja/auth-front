@@ -14,6 +14,8 @@ import React, {useState, useEffect, useCallback, useRef} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { register } from '../Actions/userActions';
 import { CheckRounded } from '@material-ui/icons';
+import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
+
 
 export const Register = () => {
     const [user, setUser] = useState({
@@ -107,6 +109,9 @@ export const Register = () => {
     <Container component="main" maxWidth="xs">
       <CssBaseline />
       <div className={classes.paper}>
+        <Avatar className={classes.avatar}>
+          <LockOutlinedIcon />
+        </Avatar>
         <Typography component="h1" variant="h5">
           Sign up
         </Typography>
@@ -166,17 +171,6 @@ export const Register = () => {
             className={classes.submit}
           >
             Sign Up
-          </Button>
-          <Button
-            onClick = {(e) => {                
-              console.log(checked);
-              console.log(user.role)}}
-            fullWidth
-            variant="contained"
-            color="secondary"
-            className={classes.submit}
-          >
-            check
           </Button>
         </form>
       </div>
