@@ -2,7 +2,7 @@
 import * as actions from  '../actiontypes';
 import axios from 'axios';
 import { act } from 'react-dom/test-utils';
-import {apiAdd, apiDelete, apilogin} from '../API/api'
+import {apiAdd, apiDelete, apilogin, apiUpdate} from '../API/api'
 
 const baseUrl = "https://localhost:44355/api/auth/";
 
@@ -254,4 +254,37 @@ export const deleteAirplaneWithFeed = (id) => dispatch => {
             return Promise.reject(message);
           }
         );
+}
+
+export const updateAirplaneWithFeed = (id, data) => dispatch => {
+    
+    const putData = {
+        airplaneId : id,
+
+        name : data.aname,
+        company : data.company,
+        model : data.model
+
+    }
+
+    return apiUpdate(id, putData)
+    .then(
+        response => {
+            
+            dispatch({
+                type : actions.airplanes.UPDATE_SUCCES,
+                payload : {id, ...putData}
+            })
+
+            return Promise.resolve();
+        },
+        error => {
+            dispatch({
+                type : actions.airplanes.UPDATE_FAILURE,
+                payload : error
+            })
+
+            return Promise.reject(error.response.status);
+        }
+    )
 }

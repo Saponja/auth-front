@@ -38,13 +38,13 @@ export default function Navbar({loggedIn, token, role}) {
   function handleSignup() {
     console.log(localStorage.getItem('token'));
 
-    history.push('/');
+    history.push('/signup');
   }
 
   function handleSignout(){
     localStorage.removeItem('token');
     dispatch(logout());
-    history.push('/');
+    history.push('/signin');
     
   }
 

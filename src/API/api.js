@@ -31,5 +31,11 @@ export const apiDelete = id => {
 export const apiAdd = data => {
   
   return axios.post(`https://localhost:44355/api/airplane`, data, {headers : getHeader()});
+}
+
+
+export const apiUpdate = (id, data) => {
+
+  return axios.put(`https://localhost:44355/api/airplane/${id}`, data, {headers : getHeader()});
 
 }

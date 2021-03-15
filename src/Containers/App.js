@@ -25,7 +25,7 @@ function App() {
       <Router>
         <Navbar loggedIn = {loggedIn} token = {token} role = {role}/>
           <Switch>
-            <Route exact path = '/'>
+            <Route exact path = '/signup'>
               <Register />
             </Route>
             <Route exact path = "/signin">

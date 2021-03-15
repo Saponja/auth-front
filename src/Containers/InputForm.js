@@ -1,7 +1,7 @@
 import React, { useEffect, useState} from 'react';
 import {Button, FormControl, Grid, MenuItem, Select, TextField, withStyles} from "@material-ui/core";
 import useForm from './useForm';
-import { addAirplane, addAirplaneWithFeed, updateAirplane } from '../Actions/userActions';
+import { addAirplane, addAirplaneWithFeed, updateAirplane, updateAirplaneWithFeed } from '../Actions/userActions';
 import { useDispatch, useSelector } from 'react-redux';
 
 const styles = theme => ({
@@ -27,14 +27,15 @@ const initalValues = {
     model: ""
 }
 
+
+
+
+
 const InputForm = ({classes ,...props}) => {
 
     const dispatch = useDispatch();
     const airplanes = useSelector(state => state.airplaneReducer.airplanes);
     const [btnText, setBtnText] = useState("Add");
-
-    let changed = false;
-
 
     const {
         values,
@@ -43,30 +44,57 @@ const InputForm = ({classes ,...props}) => {
 
     } = useForm(initalValues)
 
+    const success = (text) => {
+
+        props.setColor("success");
+        props.setText(text);
+        props.setOpen(true)
+        setValues({
+            aname : "",
+            company : "",
+            model : ""
+        })
+        props.setCurrentId(0);
+    }
+
+    const badRequest = () => {
+        props.setColor("error");
+        props.setText("Bad request");
+        props.setOpen(true)
+    }
+
+    const notAuthorized = () => {
+        props.setColor("warning");
+        props.setText("Not authorized");
+        props.setOpen(true)
+    }
+
     const handleSubmit = (e) => {
         e.preventDefault();
         if(props.currentId == 0){
             dispatch(addAirplaneWithFeed(values))
             .then((response) => {
-                props.setColor("success");
-                props.setText("You added airplane successfully");
-                props.setOpen(true)
+                success("You added airplane successfully");
               }, (status) => {
                     if(status == 400){
-                        props.setColor("error");
-                        props.setText("Bad request");
-                        props.setOpen(true)
+                        badRequest();
                     }else if(status == 403){
-                        props.setColor("warning");
-                        props.setText("Not authorized");
-                        props.setOpen(true)
+                        notAuthorized();
                     }
               })
-            props.setCurrentId(0);
+            
         }
         if(props.currentId != 0){
-            dispatch(updateAirplane(props.currentId, values));
-            props.setCurrentId(0);
+            dispatch(updateAirplaneWithFeed(props.currentId, values))
+            .then((response) => {
+               success("Airplane has been updated successfully");
+              }, (status) => {
+                    if(status == 400){
+                        badRequest();
+                    }else if(status == 403){
+                        notAuthorized();
+                    }
+              })
             
         }
         
@@ -76,14 +104,11 @@ const InputForm = ({classes ,...props}) => {
 
     useEffect(() => {
 
-    
         if(props.currentId == 0){
             setBtnText("Add");
         }else{
             setBtnText("Edit");
         }
-        
-        
 
         if(props.currentId != 0){
             let airplane = airplanes.find(x => x.airplaneId == props.currentId);
@@ -165,8 +190,6 @@ const InputForm = ({classes ,...props}) => {
                 </Grid>
 
             </Grid>
-
-
         </form>
     )
 }
