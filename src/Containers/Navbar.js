@@ -30,14 +30,11 @@ export default function Navbar({loggedIn, token, role}) {
   const dispatch = useDispatch();
 
   function handleSignin() {
-    console.log(localStorage.getItem('token'));
     history.push('/signin');
 
   }
 
   function handleSignup() {
-    console.log(localStorage.getItem('token'));
-
     history.push('/signup');
   }
 
