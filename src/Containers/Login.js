@@ -70,9 +70,6 @@ export default function SignIn() {
     }
   }
 
-  function handleClick(e){
-      console.log(test);
-  }
 
 
 

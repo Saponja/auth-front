@@ -13,6 +13,7 @@ import {
   Link,
   withRouter,
 } from "react-router-dom";
+import PrivateRoute from './PrivateRoute';
 
 function App() {
 
@@ -25,15 +26,13 @@ function App() {
       <Router>
         <Navbar loggedIn = {loggedIn} token = {token} role = {role}/>
           <Switch>
-            <Route exact path = '/signup'>
+            <Route path = '/signup'>
               <Register />
             </Route>
             <Route exact path = "/signin">
               <SignIn />
             </Route>
-            <Route exact path = "/home">
-              <Home role = {role}/>
-            </Route>
+            <PrivateRoute exact path = "/home" component={Home} />
           </Switch>
         </Router>
     </div>

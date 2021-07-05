@@ -11,6 +11,7 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import React, {useState, useEffect, useCallback, useRef} from 'react';
+import { useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from 'react-redux';
 import { register } from '../Actions/userActions';
 import { CheckRounded } from '@material-ui/icons';
@@ -27,6 +28,7 @@ export const Register = () => {
     const [submitted, setSubmitted] = useState(false);
     const [checked, setChecked] = useState(false);
     const dispatch = useDispatch();
+    let history = useHistory();
 
     const handleMouseClicked = useCallback(e => {
       checked ? setChecked(false) : setChecked(true);
@@ -79,7 +81,14 @@ export const Register = () => {
         setSubmitted(true);
         console.log(user.role)
         if (user.email && user.username && user.password && user.role) {
-            dispatch(register(user));
+            dispatch(register(user)).then(
+              response => {
+                history.push("/signin")
+              },
+              error => {
+                alert("Wrong data");
+              }
+            );
         }
     }
 

@@ -74,7 +74,7 @@ const InputForm = ({classes ,...props}) => {
         if(props.currentId == 0){
             dispatch(addAirplaneWithFeed(values))
             .then((response) => {
-                success("You added airplane successfully");
+                success("Airplane has been added successfully");
               }, (status) => {
                     if(status == 400){
                         badRequest();
@@ -141,12 +141,12 @@ const InputForm = ({classes ,...props}) => {
                             onChange = {handleInputChange} 
                         >
                             <MenuItem value = "">Select Company</MenuItem>
-                            <MenuItem value = "0">Aeroflot</MenuItem>
-                            <MenuItem value = "1">LuftHansa </MenuItem>
-                            <MenuItem value = "2">BritishAirways</MenuItem>
-                            <MenuItem value = "3">TurkishAirlines</MenuItem>
-                            <MenuItem value = "4">QuatarAirways</MenuItem>
-                            <MenuItem value = "5">AirSerbia</MenuItem>
+                            <MenuItem value = "Aeroflot">Aeroflot</MenuItem>
+                            <MenuItem value = "LuftHansa">LuftHansa </MenuItem>
+                            <MenuItem value = "BritishAirways">BritishAirways</MenuItem>
+                            <MenuItem value = "TurkishAirlines">TurkishAirlines</MenuItem>
+                            <MenuItem value = "QuatarAirways">QuatarAirways</MenuItem>
+                            <MenuItem value = "AirSerbia">AirSerbia</MenuItem>
                         </Select>
                     </FormControl>
                     <TextField 

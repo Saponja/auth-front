@@ -1,36 +1,54 @@
 
 import * as actions from  '../actiontypes';
 import axios from 'axios';
-import { act } from 'react-dom/test-utils';
-import {apiAdd, apiDelete, apilogin, apiUpdate} from '../API/api'
+import {apiAdd, apiDelete, apilogin, apiRegister, apiUpdate, apiGet} from '../API/api'
 
-const baseUrl = "https://localhost:44355/api/auth/";
+function getHeader() {
 
-function getHeader(){
     const token = localStorage.getItem("token");
+    
     if(token){
         return { Authorization: 'Bearer ' + token };
     }else{
         return {};
     }
+
 }
 
 export const register = user => dispatch => {
     
+    // dispatch({type : actions.register.REGISTER_REQUEST});
+
+    // axios.post(baseUrl + "register", user)
+    // .then(response => {
+    //     dispatch({
+    //         type : actions.register.REGISTER_SUCCESS,
+    //         payload : response.data
+    //     })
+    // })
+    // .catch(error => {
+    //     dispatch({
+    //         type : actions.register.REGISTER_FAILURE,
+    //         payload : error
+    //     })
+    // })
+
     dispatch({type : actions.register.REGISTER_REQUEST});
 
-    axios.post(baseUrl + "register", user)
+    return apiRegister(user)
     .then(response => {
         dispatch({
             type : actions.register.REGISTER_SUCCESS,
             payload : response.data
         })
+        return Promise.resolve();
     })
     .catch(error => {
         dispatch({
             type : actions.register.REGISTER_FAILURE,
             payload : error
         })
+        return Promise.reject(error.response.status);
     })
 }
 
@@ -93,7 +111,7 @@ export const logout = () => dispatch => {
 }
 
 export const getAirplanes = () => dispatch => {
-    axios.get("https://localhost:44355/api/airplane/getall", {headers : getHeader()})
+    apiGet()
     .then(response => {
         dispatch({
             type : actions.airplanes.GETALL_SUCCESS,
@@ -211,7 +229,7 @@ export const updateAirplane = (id, data) => dispatch => {
 
 
 export const getOne = (id) => dispatch => {
-    axios.get(`https://localhost:44355/api/airplane/get/${id}`, {headers : getHeader()})
+    axios.get(`https://localhost:44355/api/airplane/${id}`, {headers : getHeader()})
     .then(response => {
         dispatch({
             type : actions.airplanes.GETONE_SUCCESS,
@@ -273,7 +291,7 @@ export const updateAirplaneWithFeed = (id, data) => dispatch => {
             
             dispatch({
                 type : actions.airplanes.UPDATE_SUCCES,
-                payload : {id, ...putData}
+                payload : {id, ...response.data}
             })
 
             return Promise.resolve();
