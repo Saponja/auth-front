@@ -1,37 +1,10 @@
 
 import * as actions from  '../actiontypes';
-import axios from 'axios';
-import {apiAdd, apiDelete, apilogin, apiRegister, apiUpdate, apiGet} from '../API/api'
+import {apiAdd, apiDelete, apilogin, apiRegister, apiUpdate, apiGet, apiGetOne} from '../API/api'
 
-function getHeader() {
-
-    const token = localStorage.getItem("token");
-    
-    if(token){
-        return { Authorization: 'Bearer ' + token };
-    }else{
-        return {};
-    }
-
-}
 
 export const register = user => dispatch => {
     
-    // dispatch({type : actions.register.REGISTER_REQUEST});
-
-    // axios.post(baseUrl + "register", user)
-    // .then(response => {
-    //     dispatch({
-    //         type : actions.register.REGISTER_SUCCESS,
-    //         payload : response.data
-    //     })
-    // })
-    // .catch(error => {
-    //     dispatch({
-    //         type : actions.register.REGISTER_FAILURE,
-    //         payload : error
-    //     })
-    // })
 
     dispatch({type : actions.register.REGISTER_REQUEST});
 
@@ -52,25 +25,6 @@ export const register = user => dispatch => {
     })
 }
 
-// export const login = credentials => dispatch => {
-    
-//     dispatch({type : actions.login.LOGIN_REQUEST});
-
-//     axios.post(baseUrl + "login", credentials)
-//     .then(response => {
-//         localStorage.setItem("token", response.data.token);
-//         dispatch({
-//             type : actions.login.LOGIN_SUCCESS,
-//             payload : response.data
-//         })
-//     })
-//     .catch(error => {
-//         dispatch({
-//             type : actions.login.LOGIN_FAILURE,
-//             payload : error
-//         })
-//     });
-// }
 
 export const login = (cred) => (dispatch) => {
     return apilogin(cred).then(
@@ -126,47 +80,6 @@ export const getAirplanes = () => dispatch => {
     })
 }
 
-export const deleteAirplane = (id) => dispatch => {
-    axios.delete(`https://localhost:44355/api/airplane/${id}`, {headers : getHeader()})
-    .then(response => {
-        dispatch({
-            type : actions.airplanes.DELETE_SUCCESS,
-            payload : id
-        });
-    })
-    .catch((error) => {
-        dispatch({
-            type : actions.airplanes.DELETE_FAILURE,
-            payload : error.response
-        });
-    })
-}
-
-export const addAirplane = (data) => dispatch => {
-
-    const postData = {
-
-        name : data.aname,
-        company : data.company,
-        model : data.model
-
-    }
-
-    axios.post(`https://localhost:44355/api/airplane`, postData, {headers : getHeader()})
-    .then(response => {
-        dispatch({
-            type : actions.airplanes.ADD_SUCCESS,
-            payload : response.data
-        })
-    })
-    .catch(error => {
-        dispatch({
-            type : actions.airplanes.ADD_FAILURE,
-            payload : error
-        })
-    })
-    
-}
 
 export const addAirplaneWithFeed = data => dispatch => {
 
@@ -199,37 +112,9 @@ export const addAirplaneWithFeed = data => dispatch => {
 }
 
 
-export const updateAirplane = (id, data) => dispatch => {
-
-    const putData = {
-        airplaneId : id,
-
-        name : data.aname,
-        company : data.company,
-        model : data.model
-
-    }
-
-    axios.put(`https://localhost:44355/api/airplane/${id}`, putData, {headers : getHeader()})
-    .then(response => {
-        dispatch({
-            type : actions.airplanes.UPDATE_SUCCES,
-            payload : {id, ...putData}
-        })
-    })
-    .catch(error => {
-        dispatch({
-            type : actions.airplanes.UPDATE_FAILURE,
-            payload : error
-        })
-    })
-
-}
-
-
 
 export const getOne = (id) => dispatch => {
-    axios.get(`https://localhost:44355/api/airplane/${id}`, {headers : getHeader()})
+    apiGetOne(id)
     .then(response => {
         dispatch({
             type : actions.airplanes.GETONE_SUCCESS,

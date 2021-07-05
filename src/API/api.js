@@ -50,5 +50,9 @@ export const apiUpdate = (id, data) => {
 }
 
 export const apiGet = () => {
-  return axios.get(baseAirplaneUrl)
+  return axios.get(baseAirplaneUrl, {headers : getHeader()})
+}
+
+export const apiGetOne = (id) => {
+  return axios.get(baseAirplaneUrl + id, {headers : getHeader()})
 }
