@@ -56,3 +56,8 @@ export const apiGet = () => {
 export const apiGetOne = (id) => {
   return axios.get(baseAirplaneUrl + id, {headers : getHeader()})
 }
+
+export const apiGetPerPage = (pageNum, numOfRows) => {
+  console.log(pageNum, numOfRows)
+  return axios.post(baseAirplaneUrl + "page", {pageNum, numOfRows}, {headers : getHeader()});
+} 

@@ -3,6 +3,7 @@ import {airplanes} from '../actiontypes';
 const initalState = {
     
     airplanes : [],
+    allairplanes : [],
     error: {}
 
 }
@@ -16,9 +17,20 @@ export const airplaneReducer = (state = initalState, action) => {
         case airplanes.GETALL_SUCCESS:
             return {
                 ...state,
-                airplanes : payload
+                allairplanes : payload
             };
         case airplanes.GETALL_FAILURE:
+            return {
+                ...state,
+                error : payload
+            }
+
+        case airplanes.GETPP_SUCCESS:
+            return {
+                ...state, 
+                airplanes : payload
+            }
+        case airplanes.GETPP_FAILURE:
             return {
                 ...state,
                 error : payload

@@ -1,6 +1,6 @@
 
 import * as actions from  '../actiontypes';
-import {apiAdd, apiDelete, apilogin, apiRegister, apiUpdate, apiGet, apiGetOne} from '../API/api'
+import {apiAdd, apiDelete, apilogin, apiRegister, apiUpdate, apiGet, apiGetOne, apiGetPerPage} from '../API/api'
 
 
 export const register = user => dispatch => {
@@ -81,6 +81,22 @@ export const getAirplanes = () => dispatch => {
 }
 
 
+export const getAirplanesPerPage = (pageNum, numOfRows) => dispatch => {
+    return apiGetPerPage(pageNum, numOfRows).then(response => {
+        dispatch({
+            type : actions.airplanes.GETPP_SUCCESS,
+            payload : response.data
+        });
+    })
+    .catch(error => {
+        dispatch({
+            type : actions.airplanes.GETPP_FAILURE,
+            payload : error
+        });
+    })
+}
+
+
 export const addAirplaneWithFeed = data => dispatch => {
 
     const postData = {
@@ -143,11 +159,6 @@ export const deleteAirplaneWithFeed = (id) => dispatch => {
           },
           (error) => {
             const message = error.response.status;
-            //   (error.response &&
-            //     error.response.data &&
-            //     error.response.data.message) ||
-            //   error.message ||
-            //   error.toString();
       
             dispatch({
                 type : actions.airplanes.DELETE_FAILURE,
@@ -191,3 +202,9 @@ export const updateAirplaneWithFeed = (id, data) => dispatch => {
         }
     )
 }
+
+
+
+
+
+

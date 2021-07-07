@@ -31,7 +31,7 @@ const initalValues = {
 
 
 
-const InputForm = ({classes ,...props}) => {
+const InputForm = ({classes, total, setTotal, ...props}) => {
 
     const dispatch = useDispatch();
     const airplanes = useSelector(state => state.airplaneReducer.airplanes);
@@ -74,6 +74,7 @@ const InputForm = ({classes ,...props}) => {
         if(props.currentId == 0){
             dispatch(addAirplaneWithFeed(values))
             .then((response) => {
+                setTotal(total + 1)
                 success("Airplane has been added successfully");
               }, (status) => {
                     if(status == 400){

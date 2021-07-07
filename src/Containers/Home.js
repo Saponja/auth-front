@@ -15,7 +15,7 @@ import { withStyles, makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import { deleteAirplaneWithFeed, login } from "../Actions/userActions";
 import { useDispatch, useSelector } from "react-redux";
-import { getAirplanes, getOne, deleteAirplane } from "../Actions/userActions";
+import { getAirplanes, getOne, deleteAirplane, getAirplanesPerPage } from "../Actions/userActions";
 import {
   Paper,
   Table,
@@ -79,6 +79,8 @@ export default function Home({ role }) {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [open, setOpen] = useState(false);
+  const allairplanes = useSelector((state) => state.airplaneReducer.allairplanes)
+  const [total, setTotal] = useState(0)
 
   const handleClose = (event, reason) => {
     if (reason === "clickaway") {
@@ -90,16 +92,19 @@ export default function Home({ role }) {
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
+    // getAirplanesPerPage(page, rowsPerPage).then(response => setAirplanes(response));
   };
 
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(parseInt(event.target.value, 10));
+    // getAirplanesPerPage(page, rowsPerPage).then(response => setAirplanes(response));
     setPage(0);
   };
 
   const onDelete = (id) => {
     dispatch(deleteAirplaneWithFeed(id)).then(
       (response) => {
+        setTotal(total - 1);
         setColor("success");
         setText("You have deleted airplane successfully");
         setOpen(true);
@@ -126,8 +131,15 @@ export default function Home({ role }) {
   }))(TableCell);
 
   useEffect(() => {
+    
     dispatch(getAirplanes());
+    setTotal(allairplanes.length)
   }, []);
+
+  useEffect(() => {
+    
+    dispatch(getAirplanesPerPage(page + 1, rowsPerPage))
+  }, [page, rowsPerPage]);
 
   return (
     <Container component="main" maxWidth="md">
@@ -141,6 +153,8 @@ export default function Home({ role }) {
       <div className={classes.paper}>
         <Container style={{ marginBottom: "3rem" }}>
           <InputForm
+            total = {total}
+            setTotal={setTotal}
             currentId={currentId}
             setCurrentId={setCurrentId}
             setOpen={setOpen}
@@ -161,7 +175,7 @@ export default function Home({ role }) {
             </TableHead>
             <TableBody>
               {airplanes
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                //.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((item, i) => {
                   return (
                     <TableRow key={i}>
@@ -194,7 +208,7 @@ export default function Home({ role }) {
           <TablePagination
             rowsPerPageOptions={[5, 10, 25]}
             component="div"
-            count={airplanes.length}
+            count={total}
             rowsPerPage={rowsPerPage}
             page={page}
             onChangePage={handleChangePage}
